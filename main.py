@@ -1,26 +1,25 @@
 import requests
+import json
 
 
-def get_api_key() -> str:
-    with open("apikey") as file:
-        key = file.read()
+def convert(from_cur: str, to_cur: str, amount: float = 1) -> float | None:
+    rates = get_rates(from_cur)
 
-    if key:
-        return key
+    if type(rates) == dict:
+        rate = rates[to_cur]
+
+        return rate * amount
 
 
-def get_rate(from_cur: str, to_cur: str, amount: float = 1) -> float | None:
-    url = url = f"https://api.apilayer.com/exchangerates_data/convert?to={to_cur}&from={from_cur}&amount={amount}"
+def get_rates(from_cur: str) -> dict | None:
+    url = f"https://api.exchangerate-api.com/v4/latest/{from_cur}"
 
-    payload = {}
-    headers = {
-        "apikey": get_api_key()
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
+    response = requests.get(url)
 
     status_code = response.status_code
     result = response.text
 
     if status_code == 200:
-        return result
+        rates = json.loads(result)["rates"]
+
+        return rates
