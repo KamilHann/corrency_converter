@@ -11,7 +11,7 @@ Dependencies installation:
 pip install "fastapi[all]" "uvicorn[standard]" requests
 ```
 
-To run project:
+Running project:
 ```
 uvicorn main:app --reload
 ```

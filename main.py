@@ -1,14 +1,19 @@
 import requests
 import json
+import fastapi
 
 
-def convert(from_cur: str, to_cur: str, amount: float = 1) -> float | None:
+def convert(from_cur: str, *to_cur: tuple[str]) -> float | None:
     rates = get_rates(from_cur)
+    returning_rates = {}
 
     if type(rates) == dict:
-        rate = rates[to_cur]
+        for cur in to_cur:
+            rate = rates[cur]
 
-        return rate * amount
+            returning_rates[cur] = rate
+
+    return returning_rates
 
 
 def get_rates(from_cur: str) -> dict | None:
